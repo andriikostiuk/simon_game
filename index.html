@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>Simon Game</title>
+  
+  
+  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
+
+      <style>
+      /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
+      :root {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+}
+
+.container {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+header {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  width: 100%; 
+  height: 3.5rem;
+  background-color: rgb(0, 204, 255);
+  font-size: 0;
+  border-bottom: 1px solid rgb(0, 163, 204);
+}
+
+h1 {
+  margin: 0;
+  padding: 0;
+  left: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  position: relative;
+  display: inline-block;
+  font-family: Finger Paint;
+  font-size: 2.5rem;
+  text-shadow: 0.15rem 0.15rem 0 black;
+}
+
+#h1_1, #h1_9 {
+  color: red;
+}
+
+#h1_2, #h1_10 {
+  color: orange;
+}
+
+#h1_3, #h1_11 {
+  color: yellow;
+}
+
+#h1_4, #h1_12 {
+  color: green;
+}
+
+#h1_5, #h1_13 {
+  color: blue;
+}
+
+#h1_6, #h1_14 {
+  color: indigo;
+}
+
+#h1_7 {
+  color: violet;
+}
+
+.menu {
+  position: absolute;
+  z-index: 3;
+  right: 6rem;
+  font-size: 0;
+}
+
+.menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  top: 0;
+}
+
+.menu ul li {
+  position: relative;
+  display: inline-block;
+  height: 3.5rem;
+  font-size: 1.5rem;
+}
+
+.menu ul li button {
+  position: relative;
+  color: white;
+  text-decoration: none;
+  background-color: rgb(0, 204, 255);
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 0 0.5rem;
+  border-bottom: 1px solid rgb(0, 163, 204);
+}
+
+.menu ul li button:hover {
+  color: rgb(0, 204, 255);
+  background-color: white;
+}
+
+.menu ul li ul {
+  display: block;
+  position: absolute;
+  z-index: -1;
+  top: 3.5rem;
+  border-radius: 0 0 0.5rem 0.5rem;
+  box-shadow: 0 0 1rem rgb(179, 179, 179);
+}
+
+.menu ul li ul li {
+  width: 10rem;
+  height: 2.5rem;
+  font-size: 1.3rem;
+}
+
+.menu ul li ul li button {
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  padding-left: 1rem;
+  background-color: rgb(240, 245, 245);
+  color: black;
+  border: none;
+}
+
+.menu ul li ul li button:hover {
+  background-color: rgb(0, 204, 255);
+  color: white;
+}
+
+.menu ul li ul li button i {
+  position: relative;
+  vertical-align: middle;
+  left: 2rem;
+}
+
+.menu ul li ul li ul {
+  position: absolute;
+  left: 10rem;
+  top: 0;
+  border-radius: 0.5rem;
+}
+
+.menu ul li ul li ul li {
+  width: 12rem;
+}
+
+#btnAdvanced, #btnRainbowMaster {
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+#btn5Colors {
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.rules {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 2rem auto;
+  grid-template-areas:
+    'rulesDivBtnArea'
+    'rulesDivPArea';
+  background-color: white;
+  box-shadow: 0 0 1rem rgb(179, 179, 179);
+}
+
+.rulesDivBtn {
+  position: relative;
+  grid-area: rulesDivBtnArea;
+  text-align: right;
+  top: 0.25rem;
+  right: 1rem;
+}
+
+#btnCloseRules {
+  position: relative;
+  border: none;
+  outline: none;
+  padding: 0;
+  font-size: 1.5rem;
+  color: lightgrey;
+}
+
+#btnCloseRules:hover {
+  color: rgb(0, 204, 255);
+}
+
+.rulesDivP {
+  grid-area: rulesDivPArea;
+  padding: 0.5rem 4rem 1rem 4rem;
+  font-family: Titillium Web;
+  font-size: 1.4rem;
+}
+
+main {
+  position: absolute;
+  background: url("https://www.toptal.com/designers/subtlepatterns/patterns/light_wool.png"); /*url("https://www.toptal.com/designers/subtlepatterns/patterns/grey.png")
+  url("https://www.toptal.com/designers/subtlepatterns/patterns/gplaypattern.png")
+  url("https://www.toptal.com/designers/subtlepatterns/patterns/light_wool.png")
+  url("https://www.toptal.com/designers/subtlepatterns/patterns/polonez_car.png")*/
+  width: 100%;
+  height: auto;
+  top: 3.5rem;
+  bottom: 0;
+  display: grid;
+  grid-template-rows: auto 2rem;
+  grid-template-areas:
+    'gameArea'
+    'footerArea';
+}
+
+.game {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  grid-area: gameArea;
+}
+
+#bigCircleSVG {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.footer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  grid-area: footerArea;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: 
+    'authorArea socialMediaArea';
+}
+
+.author {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  grid-area: authorArea;
+  text-align: right;
+  padding-right: 1rem;
+  font-family: Titillium Web;
+}
+
+.author p {
+  display: block;
+  position: relative;
+  font-size: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.socialMedia {
+  grid-area: socialMediaArea;
+  text-align: left;
+  padding-left: 1rem;
+}
+
+.socialMedia a {
+  position: relative;
+  display: inline-block;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  padding-left: 0.5rem;
+  color: rgb(0, 204, 255);
+}
+
+                                               /*  Media queries  */
+
+@media only screen and (max-width: 767px) {
+  :root {
+    font-size: 10px;
+  }
+  
+  body {
+    cursor: pointer;
+  }
+  
+  header {
+    position: fixed;
+    text-align: center;
+    height: 2.5rem;
+  }
+  
+  h1 {
+    left: 0;
+    font-size: 2rem;
+  }
+  
+  .menu {
+    position: fixed;
+    width: 100vw;
+    top: 2.5rem;
+    left: 0;
+    text-align: center;
+    background-color: rgb(0, 204, 255);
+    border-bottom: 0.1rem solid rgb(0, 163, 204);
+  }
+  
+  .menu ul li {
+    height: 2.5rem;
+  }
+  
+  .menu ul li button {
+    border: none;
+  }
+  
+  .menu ul li ul {
+    top: 2.6rem;
+  }
+  
+  .menu ul li ul li button {
+    border: none;
+  }
+  
+  .footer {
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr;
+  }
+  
+  .author {
+    text-align: center;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  :root {
+    font-size: 12px;
+  }
+  
+  body {
+    cursor: pointer;
+  }
+}
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+
+</head>
+
+<body>
+
+  <html>
+  <head>
+    <title>Simon Game</title>
+    <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <link href="https://fonts.googleapis.com/css?family=Finger Paint" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Titillium Web" rel="stylesheet" type="text/css">
+    <div class='container'>
+      <div class='menu'>
+        <ul>
+          <li><button id='btnSettings'>Settings</button>
+            <ul>
+              <li><button id='btnClassic'>Classic</button></li>
+              <li><button id=btnAdvanced>Advanced<i class="fas fa-angle-right"></i></button>
+                <ul>
+                  <li><button id='btn5Colors'>5 colors</button></li>
+                  <li><button id='btn6Colors'>6 colors</button></li>
+                  <li><button id='btnRainbowMaster'>Rainbow Master</button></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li><button id='btnRules'>Rules</button></li>
+          <li><button id='btnHighScores'>High Scores</button></li>
+        </ul>
+      </div>
+      <div class='rules'>
+        <div class='rulesDivBtn'>
+          <button id='btnCloseRules'><i class="far fa-times-circle"></i></button>
+        </div>
+        <div class='rulesDivP'>
+          <p>The device has four colored buttons, each producing a particular tone when it is pressed or activated by the device. A round in the game consists of the device lighting up one or more buttons in a random order, after which the player must reproduce that order by pressing the buttons. As the game progresses, the number of buttons to be pressed increases. (This is only one of the games on here, there are actually other games on the original).</p>
+        </div>
+      </div>
+      <header>
+        <h1 id='h1_1'>R</h1>
+        <h1 id='h1_2'>A</h1>
+        <h1 id='h1_3'>I</h1>
+        <h1 id='h1_4'>N</h1>
+        <h1 id='h1_5'>B</h1>
+        <h1 id='h1_6'>O</h1>
+        <h1 id='h1_7'>W</h1>
+        <h1 id='h1_8'>&nbsp;&nbsp;</h1>
+        <h1 id='h1_9'>M</h1>
+        <h1 id='h1_10'>A</h1>
+        <h1 id='h1_11'>S</h1>
+        <h1 id='h1_12'>T</h1>
+        <h1 id='h1_13'>E</h1>
+        <h1 id='h1_14'>R</h1>
+      </header>
+      <main>
+        <div class='game'>
+          <svg id='bigCircleSVG'></svg>
+        </div>
+        <div class='footer'>
+          <div class='author'>
+            <p>coded and designed by Andrii Kostiuk</p>
+          </div>
+          <div class='socialMedia'>
+            <a href='https://www.facebook.com/andrii.kostiuk.7' target='_blank'><i class="fab fa-facebook-square"></i></a>
+            <a href='#'><i class="fab fa-linkedin"></i></a>
+            <a href='#'><i class="fab fa-github-square"></i></a>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+
+  
+
+    <script  src="js/index.js"></script>
+
+
+
+
+</body>
+
+</html>
