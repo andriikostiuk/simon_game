@@ -264,7 +264,7 @@ $(document).ready(function() {
   $('.rules').hide();
   $('.menu ul li ul').hide();
   createSVG(4);
-  createSmallSVG();
+  //createSmallSVG();
   
   /*
   /window.onresize = function(event)
