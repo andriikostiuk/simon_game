@@ -84,14 +84,12 @@ $(document).ready(function() {
   
   
   function createSVG(level) {
-    var ox=$('.game').width()/2;
-    var oy=$('.game').height()/2;
-    var r;
-    if (ox>=oy) {
-      r=oy*0.8;
-    } else if (ox<oy) {
-      r=ox*0.8;
-    }
+    var side = Math.min($('.game').width(), $('.game').height());
+    var bigCircleSVG = $('#bigCircleSVG')
+    bigCircleSVG.attr('width', side).attr('height', side);
+    var ox=bigCircleSVG.width()/2;
+    var oy=bigCircleSVG.height()/2;
+    var r = Math.min(ox, oy) * 0.8;
     var r0=r*0.5;
     var borderWidth;
     if (window.innerWidth<768) {
@@ -251,6 +249,9 @@ $(document).ready(function() {
   
   
   function createSmallSVG() {
+    var bigCircleSVG = $('#bigCircleSVG')
+    var ox=bigCircleSVG.width()/2;
+    var oy=bigCircleSVG.height()/2;
     $('#bigCircleSVG').append('<svg><circle id="smallCircleSVG" cx="'+ox+'" cy="'+oy+'" r="'+rSmall+'" fill="rgb(200, 200, 205)"/></svg>');
     $('#smallCircleSVG').css({
       'position': 'relative',
