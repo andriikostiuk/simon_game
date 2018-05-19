@@ -3,6 +3,14 @@ $(document).ready(function() {
   
                       /*  Variables  */
   var top;
+  var ox;
+  var oy;
+  var r0;
+  var borderWidth;
+  var x3;
+  var X4;
+  var y3;
+  var r3;
   var arrShapes=[];
   var arrShades=[];
   var arrShadesPressed=[];
@@ -10,6 +18,10 @@ $(document).ready(function() {
   var arrColors=['red', 'blue', 'yellow', 'green', 'indigo', 'orange', 'violet'];
   var arrShadeColors=['rgb(128, 0 , 0)', 'rgb(0, 0, 128)', 'rgb(128, 128, 0)', 'rgb(0, 64, 0)', 'rgb(35, 0, 65)', 'rgb(128, 83, 0)', 'rgb(119, 65, 119)'];
   var arrColorsLight=['rgb(255, 204, 204)', 'rgb(204, 204, 255)', 'rgb(255, 255, 204)', 'rgb(204, 255, 204)', 'rgb(234, 204, 255)', 'rgb(255, 237, 204)', 'rgb(249, 210, 249)'];
+  var mode=0;
+  var step=0;
+  var arrRandom=[];
+
 
                       /*  Functions Declaration  */
   function rulesAnimation() {
@@ -68,30 +80,15 @@ $(document).ready(function() {
     }
   }
   
-  /*function hover() {
-    $('#btnSettings').hover(function() {
-      $(this).css({
-        'color': 'rgb(0, 204, 255)',
-        'background-color': 'white'
-      });
-    }, function() {
-      $(this).css({
-        'color': 'white',
-        'background-color': 'rgb(0, 204, 255)'
-      });
-    });
-  }*/
-  
   
   function createSVG(level) {
     var side = Math.min($('.game').width(), $('.game').height());
-    var bigCircleSVG = $('#bigCircleSVG')
+    var bigCircleSVG = $('#bigCircleSVG');
     bigCircleSVG.attr('width', side).attr('height', side);
-    var ox=bigCircleSVG.width()/2;
-    var oy=bigCircleSVG.height()/2;
+    ox=bigCircleSVG.width()/2;
+    oy=bigCircleSVG.height()/2;
     var r = Math.min(ox, oy) * 0.8;
-    var r0=r*0.5;
-    var borderWidth;
+    r0=r*0.5;
     if (window.innerWidth<768) {
       borderWidth=1.5*10;
     } else if (window.innerWidth<1025) {
@@ -212,6 +209,7 @@ $(document).ready(function() {
       });
     }
     pressBtn(level);
+    createSmallSVG(ox, oy, r0-borderWidth/2);
   }
   
   
@@ -248,15 +246,190 @@ $(document).ready(function() {
   }
   
   
-  function createSmallSVG() {
-    var bigCircleSVG = $('#bigCircleSVG')
-    var ox=bigCircleSVG.width()/2;
-    var oy=bigCircleSVG.height()/2;
-    $('#bigCircleSVG').append('<svg><circle id="smallCircleSVG" cx="'+ox+'" cy="'+oy+'" r="'+rSmall+'" fill="rgb(200, 200, 205)"/></svg>');
-    $('#smallCircleSVG').css({
-      'position': 'relative',
-      'z-index': '-1'
+  function createSmallSVG(circleOX, circleOY, circleRadius) {
+    var y0=circleOY-circleRadius/3;
+    var x1=circleOX-circleRadius*0.7;
+    var y1=circleOY-circleRadius*0.07;
+    var x2=circleOX+circleRadius*0.13;
+    var y2=y1+circleRadius/10;
+    var x2T1=circleOX;
+    var y2T1=circleOY;
+    var x2T2=circleOX+circleRadius*0.55;
+    x3=circleOX-circleRadius*0.35;
+    y3=circleOY+circleRadius*0.6;
+    var y3T=circleOY+circleRadius*0.45;
+    r3=circleRadius*0.13;
+    x4=circleOX+circleRadius*0.35;
+    $('#bigCircleSVG').append('<svg><circle id="smallCircleBackground" cx="'+circleOX+'" cy="'+circleOY+'" r="'+circleRadius+'" fill="rgb(200, 200, 205)"/></svg>');
+    $('#bigCircleSVG').append('<svg><text id="smallCircleTitle" x="'+circleOX+'" y="'+y0+'" text-anchor="middle">simon</text></svg>');
+    $('#smallCircleTitle').css('font-size', circleRadius/2.3);
+    $('#bigCircleSVG').append('<svg><rect id="display" x="'+x1+'" y="'+y1+'" rx="7" ry="7" width="'+circleRadius/1.8+'" height="'+circleRadius/3+'" fill="black"/><text></text></svg>');
+    $('#bigCircleSVG').append('<svg><text id="normalText" x="'+x2T1+'" y="'+y2T1+'" >normal</text></svg>');
+    $('#bigCircleSVG').append('<svg><text id="strictText" x="'+x2T2+'" y="'+y2T1+'" >strict</text></svg>');
+    $('#bigCircleSVG').append('<svg><rect id="modeStrict" x="'+x2+'" y="'+y2+'" rx="3" ry="3" width="'+circleRadius/1.8+'" height="'+circleRadius/5+'" fill="rgb(255, 102, 102)" stroke="black" stroke-width="1.5" /></svg>');
+    $('#bigCircleSVG').append('<svg><rect id="modeNormal" x="'+x2+'" y="'+y2+'" rx="3" ry="3" width="'+circleRadius/1.8+'" height="'+circleRadius/5+'" fill="rgb(165, 218, 139)" stroke="black" stroke-width="1.5" /></svg>');
+    $('#bigCircleSVG').append('<svg><rect id="switchShade" x="'+(x2+0.75)+'" y="'+(y2+0.75)+'" rx="2" ry="2" width="'+(circleRadius/8-0.5)+'" height="'+(circleRadius/5-1.25)+'" fill="rgb(115, 115, 115)" /></svg>');
+    $('#bigCircleSVG').append('<svg><a href="#"><rect id="switch" x="'+(x2+3)+'" y="'+(y2+3)+'" rx="2" ry="2" width="'+(circleRadius/8-3)+'" height="'+(circleRadius/5-3)+'" fill="rgb(230, 230, 230)" /></a></svg>')
+    $('#bigCircleSVG').append('<svg><text id="startText" x="'+x3+'" y="'+y3T+'" text-anchor="middle">start</text></svg>');
+    $('#bigCircleSVG').append('<svg><circle id="startBtnBackground" cx="'+x3+'" cy="'+y3+'" r="'+r3+'" /></svg>');
+    $('#bigCircleSVG').append('<svg><circle id="startBtnShade" cx="'+x3+'" cy="'+y3+'" r="'+r3*0.8+'" fill="rgb(128, 128, 0)" /></svg>');
+    $('#bigCircleSVG').append('<svg><a href="#"><circle class="smallCircleBtns" id="startBtn" cx="'+(x3-r3*0.03)+'" cy="'+(y3+r3*0.13)+'" r="'+r3*0.7+'" fill="yellow" /><a/></svg>');
+    $('#bigCircleSVG').append('<svg><text id="onOffText" x="'+x4+'" y="'+y3T+'" text-anchor="middle">on/off</text></svg>');
+    $('#bigCircleSVG').append('<svg><circle id="onOffBtnBackground" cx="'+x4+'" cy="'+y3+'" r="'+r3+'" /></svg>');
+    $('#bigCircleSVG').append('<svg><circle id="onOffBtnShade" cx="'+x4+'" cy="'+y3+'" r="'+r3*0.8+'" fill="rgb(64, 114, 128)" /></svg>');
+    $('#bigCircleSVG').append('<svg><a href="#"><circle class="smallCircleBtns" id="onOffBtn" cx="'+(x4+r3*0.03)+'" cy="'+(y3+r3*0.13)+'" r="'+r3*0.7+'" fill="rgb(128, 229, 255)" /><a/></svg>');
+    pressSmallBtn();
+    //$('#modeStrict').hide();
+    pressSwitch(x2+3, x2+circleRadius*0.43+2.5, circleRadius);
+  }
+
+
+  function pressStart() {
+    $('#startBtnShade').hide();
+    $('#startBtn').attr({
+      'cx': x3,
+      'cy': y3
     });
+  }
+
+
+  function releaseStart() {
+    $('#startBtnShade').show();
+    $('#startBtn').attr({
+      'cx': x3-r3*0.03,
+      'cy': y3+r3*0.13
+    });
+    random(4);
+  }
+
+
+  function pressOnOff() {
+    $('#onOffBtnShade').hide();
+    $('#onOffBtn').attr({
+      'cx': x4,
+      'cy': y3
+    });
+  }
+
+
+  function releaseOnOff() {
+    $('#onOffBtnShade').show();
+    $('#onOffBtn').attr({
+      'cx': x4+r3*0.03,
+      'cy': y3+r3*0.13
+    });
+  }
+
+
+  function pressSmallBtn() {
+    $('#startBtn').bind('touchstart', function() {
+      pressStart();
+    });
+    $('#startBtn').bind('touchend', function() {
+      releaseStart();
+    });
+    $('#startBtn').mousedown(function() {
+      pressStart();
+    });
+    $('#startBtn').mouseup(function() {
+      releaseStart();
+    });
+    $('#onOfftBtn').bind('touchstart', function() {
+      pressOnOff();
+    });
+    $('#onOffBtn').bind('touchend', function() {
+      releaseOnOff();
+    });
+    $('#onOffBtn').mousedown(function() {
+      pressOnOff();
+    });
+    $('#onOffBtn').mouseup(function() {
+      releaseOnOff();
+    });
+  }
+
+
+  function changeNormalToStrict(xNormal, xStrict, radius) {
+    var position=xNormal;
+    var switchWidth=$('#switch').width();
+    var normalInterval=setInterval(function() {
+      if (position>=xStrict) {
+        clearInterval(normalInterval);
+        mode=1;
+      } else {
+        position++;
+        $('#switch').attr('x', position);
+        $('#switchShade').attr('x', position-3.25);
+        $('#modeNormal').attr('x', position).attr('width', xStrict+switchWidth-position);
+      }
+    }, 5);
+  }
+
+
+  function changeStrictToNormal(xNormal, xStrict, radius) {
+    var position=xStrict;
+    var switchWidth=$('#switch').width();
+    var strictInterval=setInterval(function() {
+      if (position<=xNormal) {
+        clearInterval(strictInterval);
+        mode=0;
+      } else {
+        position--;
+        $('#switch').attr('x', position);
+        $('#switchShade').attr('x', position-1.75);
+        $('#modeNormal').attr('x', position).attr('width', xStrict+switchWidth-position);
+      }
+    }, 5);
+  }
+
+
+  function pressSwitch(xNormal, xStrict, radius) {
+    $('#switch').bind('touchend', function() {
+      if (mode===0) {
+        changeNormalToStrict(xNormal, xStrict, radius);
+      } else if (mode===1) {
+        changeStrictToNormal(xNormal, xStrict, radius);
+      }
+    });
+    $('#switch').mouseup(function() {
+      if (mode===0) {
+        changeNormalToStrict(xNormal, xStrict, radius);
+      } else if (mode===1) {
+        changeStrictToNormal(xNormal, xStrict, radius);
+      }
+    });
+  }
+
+
+  function random(level) {
+    var arrTemp=[];
+    for (var i=0; i<=level; i++) {
+      arrTemp.push(i*1/level);
+    }
+    var tempRandom=Math.random();
+    for (var j=0; j<arrTemp.length; j++) {
+      if (tempRandom>=arrTemp[j] && tempRandom<arrTemp[j+1]) {
+        arrRandom.push(arrColors[j]);
+      }
+    }
+    var arrRandomCopy=arrRandom.slice();
+    randomBtn(arrRandomCopy);
+  }
+
+
+
+  function randomBtn(arr) {
+    if (arr.length>=1) {
+      var value=arr.shift();
+      var randomBtnIndex=arrColors.indexOf(value)+1;
+      $('#bigCircleShape'+randomBtnIndex+'').css('fill', 'url(#radGradient'+randomBtnIndex+')');
+      setTimeout (function() {
+        $('#bigCircleShape'+randomBtnIndex+'').css('fill', arrColors[randomBtnIndex-1]);
+        setTimeout (function() {
+          randomBtn(arr);
+        }, 500);
+      }, 1000);
+    }
   }
   
   
@@ -264,13 +437,6 @@ $(document).ready(function() {
   $('.rules').hide();
   $('.menu ul li ul').hide();
   createSVG(4);
-  //createSmallSVG();
-  
-  /*
-  /window.onresize = function(event)
-  {
-    document.location.reload(true);
-  }*/
   
   
   $('#btnSettings').click(function(){

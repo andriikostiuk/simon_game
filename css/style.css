@@ -230,9 +230,27 @@ main {
 
 #bigCircleSVG {
   position: relative;
-  display: inline-block
-  /* width: 100%; */
-  /* height: 100%; */
+  display: inline-block;
+  height: 100%;
+}
+
+#smallCircleBackground {
+  position: relative;
+}
+
+#smallCircleTitle {
+  position: relative;
+  font-family: Alfa Slab One;
+  font-weight: 500;
+  fill: black;
+}
+
+.smallCircleBtns {
+  cursor: pointer;
+}
+
+#switch {
+  cursor: pointer;
 }
 
 .footer {
