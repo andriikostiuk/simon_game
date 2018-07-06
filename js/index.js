@@ -8,19 +8,35 @@ $(document).ready(function() {
   var r0;
   var borderWidth;
   var x3;
-  var X4;
+  var x4;
   var y3;
   var r3;
   var arrShapes=[];
   var arrShades=[];
   var arrShadesPressed=[];
   var arrBorders=[];
-  var arrColors=['red', 'blue', 'yellow', 'green', 'indigo', 'orange', 'violet'];
-  var arrShadeColors=['rgb(128, 0 , 0)', 'rgb(0, 0, 128)', 'rgb(128, 128, 0)', 'rgb(0, 64, 0)', 'rgb(35, 0, 65)', 'rgb(128, 83, 0)', 'rgb(119, 65, 119)'];
-  var arrColorsLight=['rgb(255, 204, 204)', 'rgb(204, 204, 255)', 'rgb(255, 255, 204)', 'rgb(204, 255, 204)', 'rgb(234, 204, 255)', 'rgb(255, 237, 204)', 'rgb(249, 210, 249)'];
-  var mode=0;
-  var step=0;
+  var arrColors=['red', 'blue', 'rgb(250, 224, 60)', 'green', 'indigo', 'orange', 'purple'];
+  var arrShadeColors=['rgb(128, 0 , 0)', 'rgb(0, 0, 128)', 'rgb(128, 128, 0)', 'rgb(0, 64, 0)', 'rgb(35, 0, 65)', 'rgb(128, 83, 0)', 'rgb(51, 0, 51)'];
+  var arrColorsLight=['rgb(255, 128, 128)', 'rgb(128, 128, 255)', 'rgb(255, 255, 179)', 'rgb(128, 255, 128)', 'rgb(149, 0, 255)', 'rgb(255, 210, 128)', 'rgb(255, 0, 255)'];
+  var arrPianoNotes=['pianoA.wav', 'pianoB.wav', 'pianoC.wav', 'pianoD.wav', 'pianoE.wav', 'pianoF.wav', 'pianoG.wav'];
+  var mode='normal';
+  var switchMode='inactive';
   var arrRandom=[];
+  var arrRandomCopy=[];
+  var arrPlayer=[];
+  var arrCountdown=['ready', 'steady', 'go'];
+  var level=4;
+  var colorClicked=0;
+  var repeatRandom;
+  var randomRecursion;
+  var randomBtnColors;
+  var randomBtnColors;
+  var power='off';
+  var flashingDisplayInterval;
+  var flashingDisplayTimeout;
+  var music=new Audio();
+  var wrongMoveSound=new Audio(); 
+  var countdownSound=new Audio();
 
 
                       /*  Functions Declaration  */
@@ -157,7 +173,7 @@ $(document).ready(function() {
     }
     for (var k=1; k<arrX.length; k++) {
       arrShapes.push(' M '+arrX0[k-1]+' '+arrY0[k-1]+' A '+r0+' '+r0+' 0 0 1 '+arrX0[k]+' '+arrY0[k]+' L '+arrX[k]+' '+arrY[k]+' A '+r+' '+r+' 0 0 0 '+arrX[k-1]+' '+arrY[k-1]+' Z');
-      $('#bigCircleSVG').append('<svg><defs><radialGradient id="radGradient'+k+'"><stop offset="0%" style="stop-color:'+arrColorsLight[k-1]+'" /><stop offset="100%" style="stop-color:'+arrColors[k-1]+'" /></radialGradient></defs><a href="#" class="colors" id="color'+k+'"><path id="bigCircleShape'+k+'"/></a></svg>');
+      $('#bigCircleSVG').append('<svg><a href="#" class="colors" id="color'+k+'"><path id="bigCircleShape'+k+'"/></a></svg>');
       $('#bigCircleShape'+k+'').attr({
         d: arrShapes[arrShapes.length-1]
       });
@@ -214,9 +230,11 @@ $(document).ready(function() {
   
   
   function pressMouse(i) {
-    $('#bigCircleShape'+i+'').css('fill', 'url(#radGradient'+i+')');
+    $('#bigCircleShape'+i+'').css('fill', arrColorsLight[i-1]);
     $('#bigCircleShade'+i+'').hide();
     $('#bigCircleShadePressed'+i+'').show();
+    music.src=arrPianoNotes[i-1];
+    music.play();
   }
   
   
@@ -224,6 +242,10 @@ $(document).ready(function() {
     $('#bigCircleShape'+i+'').css('fill', arrColors[i-1]);
     $('#bigCircleShade'+i+'').show();
     $('#bigCircleShadePressed'+i+'').hide();
+    music.pause();
+    arrPlayer.push(arrColors[i-1]);
+    colorClicked=1;
+    compare();
   }
   
   
@@ -263,7 +285,7 @@ $(document).ready(function() {
     $('#bigCircleSVG').append('<svg><circle id="smallCircleBackground" cx="'+circleOX+'" cy="'+circleOY+'" r="'+circleRadius+'" fill="rgb(200, 200, 205)"/></svg>');
     $('#bigCircleSVG').append('<svg><text id="smallCircleTitle" x="'+circleOX+'" y="'+y0+'" text-anchor="middle">simon</text></svg>');
     $('#smallCircleTitle').css('font-size', circleRadius/2.3);
-    $('#bigCircleSVG').append('<svg><rect id="display" x="'+x1+'" y="'+y1+'" rx="7" ry="7" width="'+circleRadius/1.8+'" height="'+circleRadius/3+'" fill="black"/><text></text></svg>');
+    $('#bigCircleSVG').append('<svg><rect id="display" x="'+x1+'" y="'+y1+'" rx="7" ry="7" width="'+circleRadius/1.8+'" height="'+circleRadius/3+'" fill="black"/><text id="displayText" x="'+(x1+circleRadius/3.6)+'" y="'+(y1+circleRadius/4.5)+'" font-size="'+circleRadius/6.5+'" font-family="Electrolize" fill="rgb(217, 217, 217)" text-anchor="middle" ></text></svg>');
     $('#bigCircleSVG').append('<svg><text id="normalText" x="'+x2T1+'" y="'+y2T1+'" >normal</text></svg>');
     $('#bigCircleSVG').append('<svg><text id="strictText" x="'+x2T2+'" y="'+y2T1+'" >strict</text></svg>');
     $('#bigCircleSVG').append('<svg><rect id="modeStrict" x="'+x2+'" y="'+y2+'" rx="3" ry="3" width="'+circleRadius/1.8+'" height="'+circleRadius/5+'" fill="rgb(255, 102, 102)" stroke="black" stroke-width="1.5" /></svg>');
@@ -279,27 +301,43 @@ $(document).ready(function() {
     $('#bigCircleSVG').append('<svg><circle id="onOffBtnShade" cx="'+x4+'" cy="'+y3+'" r="'+r3*0.8+'" fill="rgb(64, 114, 128)" /></svg>');
     $('#bigCircleSVG').append('<svg><a href="#"><circle class="smallCircleBtns" id="onOffBtn" cx="'+(x4+r3*0.03)+'" cy="'+(y3+r3*0.13)+'" r="'+r3*0.7+'" fill="rgb(128, 229, 255)" /><a/></svg>');
     pressSmallBtn();
-    //$('#modeStrict').hide();
     pressSwitch(x2+3, x2+circleRadius*0.43+2.5, circleRadius);
+    $('.colors').css('pointer-events', 'none');
+    $('.shades').css('pointer-events', 'none');
+    $('#startBtnShade').css('pointer-events', 'none');
+    $('#startBtn').css('pointer-events', 'none');
+    $('#switch').css('pointer-events', 'none');
   }
 
 
   function pressStart() {
-    $('#startBtnShade').hide();
-    $('#startBtn').attr({
-      'cx': x3,
-      'cy': y3
-    });
+    if (power==='on') {
+      $('#startBtnShade').hide();
+      $('#startBtn').attr({
+        'cx': x3,
+        'cy': y3
+      });
+    }
   }
 
 
   function releaseStart() {
-    $('#startBtnShade').show();
-    $('#startBtn').attr({
-      'cx': x3-r3*0.03,
-      'cy': y3+r3*0.13
-    });
-    random(4);
+    if (power==='on') {
+      $('#startBtnShade').show();
+      $('#startBtn').attr({
+        'cx': x3-r3*0.03,
+        'cy': y3+r3*0.13
+      });
+      clearInterval(flashingDisplayInterval);
+      clearTimeout(flashingDisplayTimeout);
+      $('#displayText').text(arrCountdown[0]);
+      $('#startBtnShade').css('pointer-events', 'none');
+      $('#startBtn').css('pointer-events', 'none');
+      countdownSound.src='countdown.wav';
+      countdownSound.loop=true;
+      countdownSound.play();
+      countdown(1);
+    }
   }
 
 
@@ -318,6 +356,26 @@ $(document).ready(function() {
       'cx': x4+r3*0.03,
       'cy': y3+r3*0.13
     });
+    if (power==='off') {
+      $('#startBtnShade').css('pointer-events', 'auto');
+      $('#startBtn').css('pointer-events', 'auto');
+      $('#switch').css('pointer-events', 'auto');
+      flashingDisplayFunc();
+      switchMode='active';
+      power='on';
+    } else if (power==='on') {
+      $('#startBtnShade').css('pointer-events', 'none');
+      $('#startBtn').css('pointer-events', 'none');
+      $('.colors').css('pointer-events', 'none');
+      $('.shades').css('pointer-events', 'none');
+      $('#switch').css('pointer-events', 'none');
+      $('#displayText').text('');
+      clearInterval(flashingDisplayInterval);
+      clearTimeout(flashingDisplayTimeout);
+      clearTimeout(repeatRandom);
+      switchMode='inactive';
+      power='off';
+    }
   }
 
 
@@ -350,51 +408,77 @@ $(document).ready(function() {
 
 
   function changeNormalToStrict(xNormal, xStrict, radius) {
-    var position=xNormal;
-    var switchWidth=$('#switch').width();
-    var normalInterval=setInterval(function() {
-      if (position>=xStrict) {
-        clearInterval(normalInterval);
-        mode=1;
-      } else {
-        position++;
-        $('#switch').attr('x', position);
-        $('#switchShade').attr('x', position-3.25);
-        $('#modeNormal').attr('x', position).attr('width', xStrict+switchWidth-position);
-      }
-    }, 5);
+    if (power==='on' && switchMode==='active') {
+      clearTimeout(repeatRandom);
+      clearInterval(flashingDisplayInterval);
+      clearTimeout(flashingDisplayTimeout);
+      $('#startBtnShade').css('pointer-events', 'auto');
+      $('#startBtn').css('pointer-events', 'auto');
+      $('.colors').css('pointer-events', 'none');
+      $('.shades').css('pointer-events', 'none');
+      var position=xNormal;
+      var switchWidth=$('#switch').width();
+      var normalInterval=setInterval(function() {
+        if (position>=xStrict) {
+          clearInterval(normalInterval);
+          clearTimeout(randomRecursion);
+          mode='strict';
+          flashingDisplayFunc();
+        } else {
+          position++;
+          $('#switch').attr('x', position);
+          $('#switchShade').attr('x', position-3.25);
+          $('#modeNormal').attr('x', position).attr('width', xStrict+switchWidth-position);
+        }
+      }, 5);
+    }
   }
 
 
   function changeStrictToNormal(xNormal, xStrict, radius) {
-    var position=xStrict;
-    var switchWidth=$('#switch').width();
-    var strictInterval=setInterval(function() {
-      if (position<=xNormal) {
-        clearInterval(strictInterval);
-        mode=0;
-      } else {
-        position--;
-        $('#switch').attr('x', position);
-        $('#switchShade').attr('x', position-1.75);
-        $('#modeNormal').attr('x', position).attr('width', xStrict+switchWidth-position);
-      }
-    }, 5);
+    if (power==='on' && switchMode==='active') {
+      clearTimeout(repeatRandom);
+      clearInterval(flashingDisplayInterval);
+      clearTimeout(flashingDisplayTimeout);
+      $('#startBtnShade').css('pointer-events', 'auto');
+      $('#startBtn').css('pointer-events', 'auto');
+      $('.colors').css('pointer-events', 'none');
+      $('.shades').css('pointer-events', 'none');
+      var position=xStrict;
+      var switchWidth=$('#switch').width();
+      var strictInterval=setInterval(function() {
+        if (position<=xNormal) {
+          clearInterval(strictInterval);
+          clearTimeout(randomRecursion);
+          mode='normal';
+          flashingDisplayFunc();
+        } else {
+          position--;
+          $('#switch').attr('x', position);
+          $('#switchShade').attr('x', position-2.2);
+          $('#modeNormal').attr('x', position).attr('width', xStrict+switchWidth-position);
+        }
+      }, 5);
+    }
   }
 
 
   function pressSwitch(xNormal, xStrict, radius) {
+    music.pause();
+    countdownSound.pause();
+    //clearInterval(flashingDisplayInterval);
+    //clearTimeout(flashingDisplayTimeout);
     $('#switch').bind('touchend', function() {
-      if (mode===0) {
+      if (mode==='normal') {
         changeNormalToStrict(xNormal, xStrict, radius);
-      } else if (mode===1) {
+      } else if (mode==='strict') {
         changeStrictToNormal(xNormal, xStrict, radius);
       }
     });
     $('#switch').mouseup(function() {
-      if (mode===0) {
+      if (mode==='normal') {
         changeNormalToStrict(xNormal, xStrict, radius);
-      } else if (mode===1) {
+      } else if (mode==='strict') {
         changeStrictToNormal(xNormal, xStrict, radius);
       }
     });
@@ -402,41 +486,184 @@ $(document).ready(function() {
 
 
   function random(level) {
-    var arrTemp=[];
-    for (var i=0; i<=level; i++) {
-      arrTemp.push(i*1/level);
-    }
-    var tempRandom=Math.random();
-    for (var j=0; j<arrTemp.length; j++) {
-      if (tempRandom>=arrTemp[j] && tempRandom<arrTemp[j+1]) {
-        arrRandom.push(arrColors[j]);
+    if (power==='on') {
+      var arrTemp=[];
+      for (var i=0; i<=level; i++) {
+        arrTemp.push(i*1/level);
       }
+      var tempRandom=Math.random();
+      for (var j=0; j<arrTemp.length; j++) {
+        if (tempRandom>=arrTemp[j] && tempRandom<arrTemp[j+1]) {
+          arrRandom.push(arrColors[j]);
+        }
+      }
+      arrRandomCopy=arrRandom.slice();
+      $('#displayText').text(arrRandom.length);
+      randomBtn(arrRandomCopy);
     }
-    var arrRandomCopy=arrRandom.slice();
-    randomBtn(arrRandomCopy);
   }
 
 
 
   function randomBtn(arr) {
-    if (arr.length>=1) {
+    if (arr.length>=1 && power==='on') {
+      $('.colors').css('pointer-events', 'none');
+      $('.shades').css('pointer-events', 'none');
       var value=arr.shift();
       var randomBtnIndex=arrColors.indexOf(value)+1;
-      $('#bigCircleShape'+randomBtnIndex+'').css('fill', 'url(#radGradient'+randomBtnIndex+')');
-      setTimeout (function() {
+      $('#bigCircleShape'+randomBtnIndex+'').css('fill', arrColorsLight[randomBtnIndex-1]);
+      music.src=arrPianoNotes[randomBtnIndex-1];
+      music.play();
+      randomBtnColors=setTimeout (function() {
         $('#bigCircleShape'+randomBtnIndex+'').css('fill', arrColors[randomBtnIndex-1]);
-        setTimeout (function() {
+        randomRecursion=setTimeout (function() {
           randomBtn(arr);
         }, 500);
+      }, 500);
+    } else if (arr.length===0 && power==='on') {
+      $('.colors').css('pointer-events', 'auto');
+      $('.shades').css('pointer-events', 'auto');
+      startRepeatRandom();
+    }
+  }
+
+
+  function countdown(i) {
+    switchMode='inactive';
+    arrRandom=[];
+    if (i<=3) {
+      setTimeout (function() {
+        $('#displayText').text(arrCountdown[i]);
+        countdown(i+1);
       }, 1000);
     }
+    if (i>3) {
+      countdownSound.pause();
+      $('#displayText').text('');
+      random(level);
+      switchMode='active';
+    }
+  }
+
+
+  function compare() {
+    clearTimeout(repeatRandom);
+    if(arrPlayer[arrPlayer.length-1]!==arrRandom[arrPlayer.length-1]) {
+      $('.colors').css('pointer-events', 'none');
+      $('.shades').css('pointer-events', 'none');
+      wrongMoveAnimation();
+      setTimeout (function() {
+        arrPlayer=[];
+        colorClicked=0;
+        if (mode==='normal') {
+          arrRandomCopy=arrRandom.slice();
+          randomBtn(arrRandomCopy);
+        } else if (mode==='strict') {
+          arrRandom=[];
+          random(level);
+        }
+      }, 1500);
+    } else if (arrPlayer[arrPlayer.length-1]===arrRandom[arrPlayer.length-1]) {
+      if (arrPlayer.length===arrRandom.length) {
+        $('.colors').css('pointer-events', 'none');
+        $('.shades').css('pointer-events', 'none');
+        if (arrPlayer.length===4) {
+          hasThePlayerWon();
+        } else if (arrPlayer.length<4) {
+          setTimeout (function() {
+            arrPlayer=[];
+            colorClicked=0;
+            random(level);
+          }, 1000);
+        }
+      } else if (arrPlayer.length<arrRandom.length) {
+        colorClicked=0;
+        startRepeatRandom();
+      }
+    }
+  }
+
+
+  function startRepeatRandom() {
+    repeatRandom=setTimeout (function() {
+      if (colorClicked===0) {
+        arrRandomCopy=arrRandom.slice();
+        arrPlayer=[];
+        randomBtn(arrRandomCopy);
+      }
+    }, 5000);
+  }
+
+
+  function wrongMoveAnimation() {
+    $('#wrongMove').show();
+    music.pause();
+    wrongMoveSound.src='alert.wav';
+    wrongMoveSound.play();
+    var i=1;
+    var wrongMoveAnimation=setInterval(function() {
+      $('#wrongMove').css({
+        'background': 'radial-gradient(circle, rgba(255, 0, 0, 0), rgba(255, 0, 0, '+i+'))'
+      });
+      i=i-0.01;
+    }, 10);
+    setTimeout(function() {
+      clearInterval(wrongMoveAnimation);
+      $('#wrongMove').hide();
+    }, 1000);
+  }
+
+
+  function flashingDisplayFunc() {
+    $('#displayText').text(' |');
+    setTimeout(function() {
+      $('#displayText').text(' ');
+    }, 500);
+    flashingDisplayInterval=setInterval(function() {
+      $('#displayText').text(' |');
+      flashingDisplayTimeout=setTimeout(function() {
+        $('#displayText').text(' ');
+      }, 500);
+    }, 1000);
+  }
+
+
+  function setInitialData() {
+    music.pause();
+    countdownSound.pause();
+    wrongMoveSound.pause();
+    mode='normal';
+    switchMode='inactive';
+    arrRandom=[];
+    arrRandomCopy=[];
+    arrPlayer=[];
+    colorClicked=0;
+    clearInterval(repeatRandom);
+    clearTimeout(randomRecursion);
+    power='off';
+    clearInterval(flashingDisplayInterval);
+    clearTimeout(flashingDisplayTimeout);
+  }
+
+
+  function hasThePlayerWon() {
+    if (level===4) {
+      $('#winNotificationText p').text('You are the winner of the classic Simon Game');
+    } else if (level>4 && level<7) {
+      $('#winNotificationText p').text('You are the winner of the '+level+' colors Simon Game');
+    } else if (level===7) {
+      $('#winNotificationText p').text('You are the real RAINBOW MASTER');
+    }
+    $('#playerWins').show();
   }
   
   
                       /*  Code  */  
   $('.rules').hide();
   $('.menu ul li ul').hide();
-  createSVG(4);
+  $('#wrongMove').hide();
+  $('#playerWins').hide();
+  createSVG(level);
   
   
   $('#btnSettings').click(function(){
@@ -457,7 +684,9 @@ $(document).ready(function() {
     $('#bigCircleSVG svg').remove();
     $('.menu ul li ul').hide();
     pressedOrNotSettings();
-    createSVG(4);
+    level=4;
+    setInitialData();
+    createSVG(level);
   });
   
   
@@ -465,7 +694,9 @@ $(document).ready(function() {
     $('#bigCircleSVG').empty();
     $('.menu ul li ul').hide();
     pressedOrNotSettings();
-    createSVG(5);
+    level=5;
+    setInitialData();
+    createSVG(level);
   });
   
   
@@ -473,7 +704,9 @@ $(document).ready(function() {
     $('#bigCircleSVG').empty();
     $('.menu ul li ul').hide();
     pressedOrNotSettings();
-    createSVG(6);
+    level=6;
+    setInitialData();
+    createSVG(level);
   });
   
   
@@ -481,7 +714,9 @@ $(document).ready(function() {
     $('#bigCircleSVG').empty();
     $('.menu ul li ul').hide();
     pressedOrNotSettings();
-    createSVG(7);
+    level=7;
+    setInitialData();
+    createSVG(level);
   });
   
   
@@ -516,6 +751,18 @@ $(document).ready(function() {
     pressedOrNotSettings();
     pressedOrNotRules();
   });
-  
-  
+
+
+  $('#btnPlayMore').click(function() {
+    level+=1;
+    if (level>7) {
+      level=7;
+    }
+    $('#playerWins').hide();
+    $('#bigCircleSVG').empty();
+    setInitialData();
+    createSVG(level);
+  });
+
+
 });
