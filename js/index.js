@@ -98,7 +98,8 @@ $(document).ready(function() {
   
   
   function createSVG(level) {
-    var side = Math.min($('.game').width(), $('.game').height());
+    var side = Math.min($('.game').width(), $('.game').height())-5;
+    console.log('text', side);
     var bigCircleSVG = $('#bigCircleSVG');
     bigCircleSVG.attr('width', side).attr('height', side);
     ox=bigCircleSVG.width()/2;
@@ -567,9 +568,9 @@ $(document).ready(function() {
       if (arrPlayer.length===arrRandom.length) {
         $('.colors').css('pointer-events', 'none');
         $('.shades').css('pointer-events', 'none');
-        if (arrPlayer.length===4) {
+        if (arrPlayer.length===20) {
           hasThePlayerWon();
-        } else if (arrPlayer.length<4) {
+        } else if (arrPlayer.length<20) {
           setTimeout (function() {
             arrPlayer=[];
             colorClicked=0;
