@@ -430,6 +430,7 @@ main {
 
   main {
     top: 5rem;
+    background-color: pink;
   }
   
   .footer {
