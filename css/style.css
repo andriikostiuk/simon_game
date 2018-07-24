@@ -429,7 +429,7 @@ main {
   }
 
   main {
-    grid-template-rows: auto 1rem;
+    top: 5rem;
   }
   
   .footer {
@@ -449,5 +449,9 @@ main {
   
   body {
     cursor: pointer;
+  }
+  
+  main {
+    top: 5rem;
   }
 }
