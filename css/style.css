@@ -211,7 +211,7 @@ main {
   url("https://www.toptal.com/designers/subtlepatterns/patterns/polonez_car.png")*/
   width: 100%;
   height: 100%;
-  top: 3.5rem;
+  /*top: 3.5rem;*/
   bottom: 0;
   display: grid;
   grid-template-rows: auto 2rem;
@@ -224,6 +224,7 @@ main {
   position: relative;
   width: 100%;
   height: 100%;
+  top: 3.5rem;
   grid-area: gameArea;
   text-align: center;
 }
