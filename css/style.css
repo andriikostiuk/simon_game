@@ -453,10 +453,15 @@ main {
   .menu ul li ul li button {
     border: none;
   }
+
+  .game {
+    background-color: pink;
+  }
   
   .footer {
     grid-template-columns: 2fr 1fr;
     grid-template-rows: 1fr;
+    background-color: green;
   }
   
   .author {
