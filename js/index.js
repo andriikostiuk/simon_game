@@ -104,15 +104,18 @@ $(document).ready(function() {
     bigCircleSVG.attr('width', side).attr('height', side);
     ox=bigCircleSVG.width()/2;
     oy=bigCircleSVG.height()/2;
-    var r = Math.min(ox, oy) * 0.8;
-    r0=r*0.5;
+    var r;
     if (window.innerWidth<768) {
       borderWidth=1.5*10;
+      r = Math.min(ox, oy) * 0.9;
     } else if (window.innerWidth<1025) {
       borderWidth=1.5*12;
+      r = Math.min(ox, oy) * 0.8;
     } else if (window.innerWidth>=1025) {
       borderWidth=1.5*16;
+      r = Math.min(ox, oy) * 0.8;
     }
+    r0=r*0.5;
     var rSmall=r0-borderWidth/2;
     var angle=Math.PI/180*360/level;
     var arrAngles=[];
