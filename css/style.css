@@ -443,7 +443,7 @@ main {
   }
   
   .menu ul li button {
-    border: none;
+    border-bottom: 0.1rem solid rgb(0, 163, 204);
   }
   
   .menu ul li ul {
