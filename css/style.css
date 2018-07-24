@@ -427,6 +427,10 @@ main {
   .menu ul li ul li button {
     border: none;
   }
+
+  main {
+    grid-template-rows: auto 1rem;
+  }
   
   .footer {
     grid-template-columns: 2fr 1fr;
