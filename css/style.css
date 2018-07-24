@@ -428,7 +428,7 @@ main {
     border: none;
   }
 
-  main {
+  .game {
     top: 5rem;
     background-color: pink;
   }
