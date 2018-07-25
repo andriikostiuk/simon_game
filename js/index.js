@@ -108,14 +108,17 @@ $(document).ready(function() {
     if (window.innerWidth<768) {
       borderWidth=1.5*10;
       r = Math.min(ox, oy) * 0.9;
+      r0=r*0.65;
     } else if (window.innerWidth<1025) {
       borderWidth=1.5*12;
       r = Math.min(ox, oy) * 0.8;
+      r0=r*0.5;
     } else if (window.innerWidth>=1025) {
       borderWidth=1.5*16;
       r = Math.min(ox, oy) * 0.8;
+      r0=r*0.5;
     }
-    r0=r*0.5;
+    console.log(borderWidth);
     var rSmall=r0-borderWidth/2;
     var angle=Math.PI/180*360/level;
     var arrAngles=[];
@@ -281,11 +284,20 @@ $(document).ready(function() {
     var x2T1=circleOX;
     var y2T1=circleOY;
     var x2T2=circleOX+circleRadius*0.55;
-    x3=circleOX-circleRadius*0.35;
-    y3=circleOY+circleRadius*0.6;
-    var y3T=circleOY+circleRadius*0.45;
-    r3=circleRadius*0.13;
-    x4=circleOX+circleRadius*0.35;
+    var y3T;
+    if (window.innerWidth<768) {
+      r3=circleRadius*0.2;
+      x3=circleOX-circleRadius*0.35;
+      y3=circleOY+circleRadius*0.68;
+      x4=circleOX+circleRadius*0.35;
+      y3T=circleOY+circleRadius*0.45;
+    } else if (window.innerWidth>=768) {
+      r3=circleRadius*0.13;
+      x3=circleOX-circleRadius*0.35;
+      y3=circleOY+circleRadius*0.6;
+      x4=circleOX+circleRadius*0.35;
+      y3T=circleOY+circleRadius*0.45;
+    }
     $('#bigCircleSVG').append('<svg><circle id="smallCircleBackground" cx="'+circleOX+'" cy="'+circleOY+'" r="'+circleRadius+'" fill="rgb(200, 200, 205)"/></svg>');
     $('#bigCircleSVG').append('<svg><text id="smallCircleTitle" x="'+circleOX+'" y="'+y0+'" text-anchor="middle">simon</text></svg>');
     $('#smallCircleTitle').css('font-size', circleRadius/2.3);
