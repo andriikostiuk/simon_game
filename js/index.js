@@ -118,7 +118,6 @@ $(document).ready(function() {
       r = Math.min(ox, oy) * 0.8;
       r0=r*0.5;
     }
-    console.log(borderWidth);
     var rSmall=r0-borderWidth/2;
     var angle=Math.PI/180*360/level;
     var arrAngles=[];

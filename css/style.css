@@ -428,16 +428,6 @@ main {
     font-size: 2rem;
   }
   
-  /*.menu {
-    position: fixed;
-    width: 100vw;
-    top: 2.5rem;
-    left: 0;
-    text-align: center;
-    background-color: rgb(0, 204, 255);
-    border-bottom: 0.1rem solid rgb(0, 163, 204);
-  }*/
-  
   .menu ul li {
     height: 2.5rem;
   }
@@ -455,6 +445,7 @@ main {
   }
 
   main {
+    position: relative;
     grid-template-rows: auto 3.5rem;
   }
   
