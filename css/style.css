@@ -454,18 +454,25 @@ main {
     border: none;
   }
 
-  .game {
-    background-color: pink;
+  main {
+    grid-template-rows: auto 3.5rem;
   }
   
   .footer {
     grid-template-columns: 2fr 1fr;
     grid-template-rows: 1fr;
-    background-color: green;
   }
   
   .author {
     text-align: center;
+  }
+
+  .author p {
+    font-size: 1.2rem;
+  }
+  
+  .socialMedia a {
+    font-size: 2rem;
   }
 }
 
