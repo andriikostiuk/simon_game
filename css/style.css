@@ -449,6 +449,10 @@ main {
     grid-template-rows: auto 3.5rem;
   }
   
+  #bigCircleSVG {
+    top: 3.5rem;
+  }
+
   .footer {
     grid-template-columns: 2fr 1fr;
     grid-template-rows: 1fr;
