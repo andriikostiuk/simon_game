@@ -238,6 +238,8 @@ main {
   position: relative;
   display: inline-block;
   height: 100%;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 #smallCircleBackground {
@@ -449,9 +451,9 @@ main {
     grid-template-rows: auto 3.5rem;
   }
   
-  #bigCircleSVG {
+  /*#bigCircleSVG {
     top: 3.5rem;
-  }
+  }*/
 
   .footer {
     grid-template-columns: 2fr 1fr;
